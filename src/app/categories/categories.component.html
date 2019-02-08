@@ -11,9 +11,11 @@
     <option value="5">5</option>
   </select>
   <button class="new-category-button" (click)="onAddCategory()">Добавить</button>
-
+  <a routerLink="/documents" routerLinkActive="active">DOCS</a>
   <ul>
-    <li *ngFor="let item of categories" (click)="onCategoryClick(item)">{{item.name}}</li>
+    <li *ngFor="let item of categories" (click)="onCategoryClick(item)">
+      <a [routerLink]="['/documents', item.id]" routerLinkActive="active">{{item.name}}</a>
+    </li>
   </ul>
 
 </div>

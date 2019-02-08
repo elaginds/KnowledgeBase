@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IoService } from '../service/io.service';
 import { Document } from '../classes/document';
 
@@ -7,23 +8,23 @@ import { Document } from '../classes/document';
   templateUrl: './documents.component.html',
   styleUrls: ['./documents.component.css']
 })
-export class DocumentsComponent {
-  isShowDocuments = false;
+export class DocumentsComponent implements OnInit {
   document = new Document(null);
   documents = [];
 
-  constructor(private io: IoService) {
-    io.openCategory$.subscribe( id => {
-      this.document.categoryId = id;
-      this.getDocuments();
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      if (params && params.id) {
+        this.document.categoryId = params.id;
+        this.getDocuments();
+      }
     });
+  }
 
+  constructor(private io: IoService,
+              private route: ActivatedRoute) {
     io.updateDocuments$.subscribe( () => {
       this.getDocuments();
-    });
-
-    io.show$.subscribe(name => {
-      this.isShowDocuments = name === 'documents';
     });
   }
 
@@ -39,9 +40,5 @@ export class DocumentsComponent {
 
   onDocumentClick(item) {
     this.io.openDocument(item.id);
-  }
-
-  onBackButtonClick() {
-    this.io.backToCategories();
   }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IoService } from '../service/io.service';
 import { Document } from '../classes/document';
 
@@ -7,18 +8,24 @@ import { Document } from '../classes/document';
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
 })
-export class TaskComponent {
-  isShowDocument = false;
+export class TaskComponent implements OnInit {
   document = new Document(null);
 
-  constructor(private io: IoService) {
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      if (params && params.id) {
+        this.document.id = params.id;
+        this.getDocument();
+      }
+    });
+  }
+
+  constructor(private io: IoService,
+              private route: ActivatedRoute,
+              private router: Router) {
     io.openDocument$.subscribe( id => {
       this.document.id = id;
       this.getDocument();
-    });
-
-    io.show$.subscribe(name => {
-      this.isShowDocument = name === 'document';
     });
   }
 
@@ -28,7 +35,13 @@ export class TaskComponent {
     });
   }
 
-  onAddDocument() {
-    this.io.addDocument(this.document);
+  onSave() {
+
+  }
+
+  onCancel() {
+    this.router.navigate(['/documents', this.document.categoryId]).then((a) => {
+      console.log(a);
+    });
   }
 }

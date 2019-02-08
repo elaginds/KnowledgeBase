@@ -1,5 +1,5 @@
-<div class="main" *ngIf="isShowDocuments">
-  <button (click)="onBackButtonClick()">Назад к категориям</button>
+<div class="main">
+  <a routerLink="/categories" routerLinkActive="active">назад</a>
   <div>
     <span>{{document.categoryName}}</span>
   </div>
@@ -8,7 +8,9 @@
   <button class="new-document-button" (click)="onAddDocument()">Добавить</button>
 
   <ul>
-    <li *ngFor="let item of documents" (click)="onDocumentClick(item)">{{item.name}}</li>
+    <li *ngFor="let item of documents">
+      <a [routerLink]="['/document', item.id]" routerLinkActive="active">{{item.name}}</a>
+    </li>
   </ul>
 
 </div>

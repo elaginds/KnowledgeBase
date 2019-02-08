@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 /*https://www.npmjs.com/package/ngx-color-picker*/
@@ -17,6 +18,13 @@ import { IoService } from './service/io.service';
 import { RequestService } from './service/request.service';
 import { ErrorService } from './service/error.service';
 
+const appRoutes: Routes = [
+  { path: 'categories', component: CategoriesComponent },
+  { path: 'documents/:id',      component: DocumentsComponent },
+  { path: 'document/:id',      component: TaskComponent },
+  { path: '', component: CategoriesComponent}
+];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +36,11 @@ import { ErrorService } from './service/error.service';
     BrowserModule,
     FormsModule,
     ColorPickerModule,
-    IconPickerModule
+    IconPickerModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: false } // <-- debugging purposes only
+    )
   ],
   providers: [
     IoService,

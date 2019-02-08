@@ -74,6 +74,14 @@ export class IoService {
   }
 
 
+  public saveCategory(id, name) {
+
+  }
+
+  public saveDocument(id, name) {
+
+  }
+
 
   public openCategory(id) {
     this.openCategorySource.next(id);
@@ -85,11 +93,15 @@ export class IoService {
     this.showSource.next('document');
   }
 
+
   public backToCategories() {
     this.showSource.next('categories');
     this.updateCategoriesSource.next();
   }
 
+  public backToDocuments() {
+    this.showSource.next('documents');
+  }
 
 
   private addItemToStorage(item, type) {

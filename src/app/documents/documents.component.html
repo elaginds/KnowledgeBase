@@ -1,0 +1,14 @@
+<div class="main" *ngIf="isShowDocuments">
+  <button (click)="onBackButtonClick()">Назад к категориям</button>
+  <div>
+    <span>{{document.categoryName}}</span>
+  </div>
+
+  <input type="text" class="new-document-input" [(ngModel)]="document.name">
+  <button class="new-document-button" (click)="onAddDocument()">Добавить</button>
+
+  <ul>
+    <li *ngFor="let item of documents" (click)="onDocumentClick(item)">{{item.name}}</li>
+  </ul>
+
+</div>

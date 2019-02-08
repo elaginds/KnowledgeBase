@@ -1,0 +1,19 @@
+<div class="main" *ngIf="isShowCategories">
+  <input type="text" class="new-category-input" [(ngModel)]="category.name">
+  <input [(colorPicker)]="category.color" [style.background]="category.color"/>
+  <input [iconPicker]="search_icon" (iconPickerSelect)="onIconPickerSelect($event)"/>
+  <span class="{{category.icon}}"></span>
+  <select [(ngModel)]="category.priority">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+  <button class="new-category-button" (click)="onAddCategory()">Добавить</button>
+
+  <ul>
+    <li *ngFor="let item of categories" (click)="onCategoryClick(item)">{{item.name}}</li>
+  </ul>
+
+</div>

@@ -1,0 +1,11 @@
+<div class="main" *ngIf="isShowDocument">
+  <div>
+    <span>{{document.categoryName}}</span>
+  </div>
+
+  <input type="text" class="new-document-input" [(ngModel)]="document.name">
+  <button class="new-document-button" (click)="onAddDocument()">Добавить</button>
+
+  <input type="text" [(ngModel)]="document.text">
+
+</div>

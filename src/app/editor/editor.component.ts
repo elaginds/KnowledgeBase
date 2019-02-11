@@ -4,12 +4,12 @@ import { IoService } from '../service/io.service';
 import { Document } from '../classes/document';
 
 @Component({
-  selector: 'app-task-component',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.css']
+  selector: 'app-editor-component',
+  templateUrl: './editor.component.html',
+  styleUrls: ['./editor.component.css']
 })
-export class TaskComponent implements OnInit {
-  document = new Document(null);
+export class EditorComponent implements OnInit {
+  document = new Document({});
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -23,20 +23,20 @@ export class TaskComponent implements OnInit {
   constructor(private io: IoService,
               private route: ActivatedRoute,
               private router: Router) {
-    io.openDocument$.subscribe( id => {
-      this.document.id = id;
-      this.getDocument();
-    });
   }
 
   getDocument() {
     this.io.getDocument(this.document.id).then((document: any) => {
+      console.log(document);
       this.document = document;
     });
   }
 
   onSave() {
-
+    this.io.saveDocument(this.document)
+      .then( (a) => {
+        this.getDocument();
+      });
   }
 
   onCancel() {

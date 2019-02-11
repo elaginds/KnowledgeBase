@@ -1,16 +1,29 @@
 <div class="main">
-  <a routerLink="/categories" routerLinkActive="active">назад</a>
-  <div>
-    <span>{{document.categoryName}}</span>
+  <a routerLink="/categories" routerLinkActive="active">< назад к категориям</a>
+
+  <div class="category-name-div">
+    <span>{{categoryName}}</span>
   </div>
 
-  <input type="text" class="new-document-input" [(ngModel)]="document.name">
-  <button class="new-document-button" (click)="onAddDocument()">Добавить</button>
+  <mat-form-field>
+    <input matInput
+           placeholder="Название"
+           type="text"
+           class="new-category-input"
+           [(ngModel)]="document.name">
+  </mat-form-field>
 
-  <ul>
-    <li *ngFor="let item of documents">
+  <button mat-raised-button
+          color="accent"
+          (click)="onAddDocument()">
+    Добавить
+  </button>
+
+  <mat-list role="list">
+    <mat-list-item role="listitem"
+                   *ngFor="let item of documents">
       <a [routerLink]="['/document', item.id]" routerLinkActive="active">{{item.name}}</a>
-    </li>
-  </ul>
+    </mat-list-item>
+  </mat-list>
 
 </div>

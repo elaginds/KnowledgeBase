@@ -9,6 +9,7 @@ import { Document } from '../classes/document';
   styleUrls: ['./documents.component.css']
 })
 export class DocumentsComponent implements OnInit {
+  categoryName = '';
   document = new Document(null);
   documents = [];
 
@@ -30,15 +31,19 @@ export class DocumentsComponent implements OnInit {
 
   getDocuments() {
     this.io.getDocuments(this.document.categoryId).then((docs: any) => {
+      console.log(docs);
+      if (docs && docs[0] && docs[0].categoryName) {
+        this.categoryName = docs[0].categoryName;
+      } else if (docs && docs[0] && typeof docs[0] === 'string') {
+        this.categoryName = docs[0];
+        docs = [];
+      }
+
       this.documents = docs;
     });
   }
 
   onAddDocument() {
     this.io.addDocument(this.document);
-  }
-
-  onDocumentClick(item) {
-    this.io.openDocument(item.id);
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { StorageService } from './storage';
 import { Category } from '../classes/category';
 import { Document} from '../classes/document';
 import { Subject } from 'rxjs';
@@ -10,12 +11,6 @@ export class IoService {
   public showSource = new Subject<any>();
   public show$ = this.showSource.asObservable();
 
-  public openDocumentSource = new Subject<any>();
-  public openDocument$ = this.openDocumentSource.asObservable();
-
-  public openCategorySource = new Subject<any>();
-  public openCategory$ = this.openCategorySource.asObservable();
-
   public updateCategoriesSource = new Subject<any>();
   public updateCategories$ = this.updateCategoriesSource.asObservable();
 
@@ -23,11 +18,17 @@ export class IoService {
   public updateDocuments$ = this.updateDocumentsSource.asObservable();
 
 
+  constructor(private storage: StorageService) {
+
+  }
+
   public addCategory(category) {
     const full_category = new Category(category);
 
     if (this.type === 'storage') {
-      this.addItemToStorage(full_category, 'categories');
+      this.storage.addItem(full_category, 'categories').then( () => {
+        this.updateCategoriesSource.next();
+      });
     }
   }
 
@@ -35,7 +36,9 @@ export class IoService {
     const full_document = new Document(document);
 
     if (this.type === 'storage') {
-      this.addItemToStorage(full_document, 'documents');
+      this.storage.addItem(full_document, 'documents').then( () => {
+        this.updateDocumentsSource.next();
+      });
     }
   }
 
@@ -43,7 +46,7 @@ export class IoService {
   public getCategories() {
     return new Promise( (resolve) => {
       if (this.type === 'storage') {
-        resolve(this.getItemsFromStorage(null, 'categories'));
+        resolve(this.storage.getItems(null, 'categories'));
       }
     });
   }
@@ -51,12 +54,16 @@ export class IoService {
   public getDocuments(id) {
     return new Promise( (resolve) => {
       if (this.type === 'storage') {
-        const category = this.getItemFromStorage(id, 'categories');
-        const documents = this.getItemsFromStorage(id, 'documents');
+        const category = this.storage.getItem(id, 'categories');
+        const documents = this.storage.getItems(id, 'documents');
 
-        documents.forEach( doc => {
-          doc.categoryName = category.name;
-        });
+        if (documents.length) {
+          documents.forEach(doc => {
+            doc.categoryName = category.name;
+          });
+        } else {
+          documents.push(category.name);
+        }
 
         resolve(documents);
       }
@@ -66,7 +73,10 @@ export class IoService {
   public getDocument(id) {
     return new Promise( (resolve) => {
       if (this.type === 'storage') {
-        const document = this.getItemFromStorage(id, 'documents');
+        const document = this.storage.getItem(id, 'documents');
+        const category = this.storage.getItem(document.categoryId, 'categories');
+
+        document.categoryName = category.name;
 
         resolve(document);
       }
@@ -78,79 +88,13 @@ export class IoService {
 
   }
 
-  public saveDocument(id, name) {
+  public saveDocument(document) {
+    return new Promise( (resolve) => {
+      if (this.type === 'storage') {
+        this.storage.updateDocument(document);
 
-  }
-
-
-  public openCategory(id) {
-    this.openCategorySource.next(id);
-    this.showSource.next('documents');
-  }
-
-  public openDocument(id) {
-    this.openDocumentSource.next(id);
-    this.showSource.next('document');
-  }
-
-
-  public backToCategories() {
-    this.showSource.next('categories');
-    this.updateCategoriesSource.next();
-  }
-
-  public backToDocuments() {
-    this.showSource.next('documents');
-  }
-
-
-  private addItemToStorage(item, type) {
-    const allItems = this.getItemsFromStorage(null, type);
-
-    allItems.push(item);
-
-    this.setAllItemsToStorage(allItems, type);
-  }
-
-  private getItemFromStorage(id, type) {
-    let result = null;
-    const items = this.getItemsFromStorage(null, type);
-
-    items.forEach(item => {
-      if (item.id === id) {
-        result = item;
+        resolve(true);
       }
     });
-
-    return result;
-  }
-
-  private getItemsFromStorage(id, type) {
-    const itemsStr = localStorage.getItem(type);
-    const itemsArr = itemsStr ? JSON.parse(itemsStr) : [];
-
-    let result = [];
-
-    if (id !== null) {
-      itemsArr.forEach(item => {
-        if ( (type === 'documents' && item.categoryId === id) || (type === 'tasks' && item.documentId === id)) {
-          result.push(item);
-        }
-      });
-    } else {
-      result = itemsArr;
-    }
-
-    return result;
-  }
-
-  private setAllItemsToStorage(items, type) {
-    localStorage.setItem(type, JSON.stringify(items));
-
-    if (type === 'categories') {
-      this.updateCategoriesSource.next();
-    } else if (type === 'documents') {
-      this.updateDocumentsSource.next();
-    }
   }
 }

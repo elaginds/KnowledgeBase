@@ -1,0 +1,41 @@
+<div class="main">
+
+  <a [routerLink]="['/documents', document.categoryId]">< назад к категории</a>
+
+  <div class="category-name-div">
+    <span>{{document.categoryName}}</span>
+  </div>
+
+  <button mat-raised-button
+          color="accent"
+          (click)="onSave()">
+    Сохранить
+  </button>
+
+  <button mat-raised-button
+          color="warn"
+          (click)="onCancel()">
+    Отменить
+  </button>
+
+  <br>
+
+  <mat-form-field>
+    <input matInput
+           placeholder="Название"
+           type="text"
+           class="new-category-input"
+           [(ngModel)]="document.name">
+  </mat-form-field>
+
+  <br>
+
+  <mat-form-field>
+    <textarea matInput
+           placeholder="Текст"
+           class="text-textarea"
+           [(ngModel)]="document.text">
+    </textarea>
+  </mat-form-field>
+
+</div>

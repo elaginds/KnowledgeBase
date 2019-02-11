@@ -1,21 +1,56 @@
-<div class="main" *ngIf="isShowCategories">
-  <input type="text" class="new-category-input" [(ngModel)]="category.name">
-  <input [(colorPicker)]="category.color" [style.background]="category.color"/>
-  <input [iconPicker]="search_icon" (iconPickerSelect)="onIconPickerSelect($event)"/>
-  <span class="{{category.icon}}"></span>
-  <select [(ngModel)]="category.priority">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </select>
-  <button class="new-category-button" (click)="onAddCategory()">Добавить</button>
-  <a routerLink="/documents" routerLinkActive="active">DOCS</a>
-  <ul>
-    <li *ngFor="let item of categories" (click)="onCategoryClick(item)">
-      <a [routerLink]="['/documents', item.id]" routerLinkActive="active">{{item.name}}</a>
-    </li>
-  </ul>
+<div class="main">
+
+  <mat-form-field class="form-field form-name">
+    <input matInput
+           placeholder="Название"
+           type="text"
+           class="new-category-input"
+           [(ngModel)]="category.name">
+  </mat-form-field>
+
+  <mat-form-field class="form-field form-priority">
+    <mat-select placeholder="Приоритет" [(ngModel)]="category.priority">
+      <mat-option *ngFor="let priority of [1,2,3,4,5]" [value]="priority">
+        {{priority}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button
+          class="form-field button-color-picker"
+          [style.background-color]="category.color"
+          [style.color]="text_color"
+          (colorPickerChange)="onChangeColor($event)"
+          [(colorPicker)]="category.color">
+    Цвет категории
+  </button>
+
+  <button mat-raised-button
+          color="primary"
+          ngClass="category.icon"
+          [iconPicker]="search_icon"
+          (iconPickerSelect)="onIconPickerSelect($event)">
+    Иконка
+  </button>
+
+  <button mat-raised-button
+          class="form-field"
+          color="accent"
+          (click)="onAddCategory()">
+    Добавить
+  </button>
+
+  <mat-list role="list">
+    <mat-list-item role="listitem"
+                   *ngFor="let item of categories"
+                   [style.background-color]="item.color">
+      <a [routerLink]="['/documents', item.id]"
+         routerLinkActive="active"
+         class="{{item.icon}}"
+         [style.color]="item.invertColor">
+        {{item.name}}
+      </a>
+    </mat-list-item>
+  </mat-list>
 
 </div>
